@@ -1,0 +1,209 @@
+from BehaviourTree import add_action_behaviour, add_condition_behaviour, add_control_behaviour
+actions = [
+	"RunTowardsTarget",  #move
+	"Thunderbolt",  #thunderbolt
+	"Irontail",  #iron tail
+	"Tackle",  #tackle
+	"Stop"  #stop
+]
+variables = [
+	"distanceFromTarget",  #distance from enemy
+	"irontailRange",  # distance where Iron tail will hit
+	"oppositeAngleFromAttack",  #angle to evade attack
+	"headingAngle",  #angle looking now
+    "isIdle",
+    "true",
+    "false",
+    "angleFromTarget",
+    "playersDirection",
+    "stopwatch"
+]
+conditions = [">", "<", "=="]
+controls = [
+    "Then", #after that
+    "Repeat", #repeating action
+    "QuitRepeating", #stop repeating action
+    "StartStopwatch" #start recording time
+]
+
+#Go 30 degrees right from the enemy!
+action0 = [
+	add_action_behaviour("RunTowardsTarget", 330)
+]
+
+#iron tail
+action1 = [
+	add_action_behaviour("IronTail")
+]
+
+#thunderbolt
+action2 = [
+	add_action_behaviour("Thunderbolt")
+]
+
+#tackle
+action3 = [
+	add_action_behaviour("Tackle")
+]
+
+#intercept to the enemy and iron tail!
+action4 = [
+	#intercept
+	add_action_behaviour("RunTowardsTarget", 0),
+    
+	#if intercepted, iron tail
+	[
+		add_condition_behaviour("distanceFromTarget", "<", "irontailRange"),
+		add_action_behaviour("Irontail")
+	]
+]
+
+# evade
+action5 = [
+	#run away opposite from the enemy's attack
+	add_action_behaviour("RunTowardsTarget", "oppositeAngleFromAttack")
+]
+
+#after that, get away from the enemy
+action6 = [
+	#after that
+	add_control_behaviour("Then"),
+
+	#get away from the enemy
+	add_action_behaviour("RunTowardsTarget", 180)
+]
+
+#look at the enemy, and thunderbolt
+action7 = [
+	#rotate towards the enemy
+	add_action_behaviour("RunTowardsTarget", 0),
+
+	# if looked at the enemy, thunderbolt
+	[
+		add_condition_behaviour("headingAngle", "==", 0),
+		add_action_behaviour("Thunderbolt")
+	]
+]
+
+#turn left and thunderbolt
+action8 = [
+	#rotate to left
+	add_action_behaviour("RunTowardsTarget", 90),
+
+	# if looked left, thunderbolt
+	[
+		add_condition_behaviour("headingAngle", "==", 90),
+		add_action_behaviour("Thunderbolt")
+	]
+]
+
+#look at me
+action9 = [
+    #rotate to player
+    add_action_behaviour("RunTowardsTarget", "playersDirection"),
+    
+    # if looked at the player, stop
+    [
+        add_condition_behaviour("headingAngle", "==", "playersDirection"),
+        add_action_behaviour("Stop")
+    ]
+]
+
+#go to the back of the enemy
+action10 = [
+    #go around the enemy
+    add_action_behaviour("RunTowardsTarget", 90)
+    
+    #if behind the enemy, stop
+    [
+        add_condition_behaviour("angleFromTarget", "==", 180),
+        add_action_behaviour("Stop")
+    ]
+]
+
+#go a little to the right
+action11 = [
+    #record time
+    add_control_behaviour("StartStopwatch"),
+    
+    #go right
+    add_action_behaviour("RunTowardsTarget", 270),
+    
+    #stop 1 second later
+    [
+        add_condition_behaviour("stopwatch", ">", 1),
+        add_action_behaviour("Stop")
+    ]
+]
+
+#irontail 3 times
+action12 = [
+    #repeat 3 times
+    add_control_behaviour("Repeat", 3),
+    
+    #irontail
+    add_action_behaviour("Irontail"),
+]
+
+#endlessly thunderbolt
+action13 = [
+    #repeat endlessly
+    add_control_behaviour("Repeat", -1),
+    
+    #thunderbolt
+    add_action_behaviour("Thunderbolt"),
+]
+
+#stop repeating
+action14 = [
+    #stop repeating
+    add_control_behaviour("QuitRepeating")
+]
+
+#tackle and move forward
+action15 = [
+    #tackle
+    add_action_behaviour("Tackle"),
+    
+    #move forward
+    add_action_behaviour("RunTowardsTarget", 0)
+]
+
+#move forward for five seconds
+action16 = [
+    #record time
+    add_control_behaviour("StartStopwatch"),
+    
+    #move forward
+    add_action_behaviour("RunTowardsTarget", 0),
+    
+    #stop after 5 seconds
+    [
+        add_condition_behaviour("stopwatch", ">", 5),
+        add_action_behaviour("Stop")
+    ]
+]
+
+#tackle and return
+action17 = [
+    #tackle
+    add_action_behaviour("Tackle"),
+    
+    #return
+    add_action_behaviour("RunTowardsTarget", 180)
+]
+
+#tackle backwards
+action18 = [
+    #look back
+    add_action_behaviour("RunTowardsTarget", 180),
+    
+    #if looked back, tackle
+    [
+        add_condition_behaviour("headingAngle", "==", 180),
+        add_action_behaviour("Tackle")
+    ]
+]
+
+#[PROMPT]
+action19 = [

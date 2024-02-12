@@ -1,0 +1,6 @@
+PokeAIBehaviour.egg-info/**
+token*
+**/__pycache__/**
+Behaviour/cache/**
+!Behaviour/cache/**/.gitkeep
+**/log.txt

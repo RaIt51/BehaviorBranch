@@ -1,0 +1,3 @@
+[submodule "Behaviour/fireworks"]
+	path = Behaviour/fireworks
+	url = https://github.com/materialsproject/fireworks.git

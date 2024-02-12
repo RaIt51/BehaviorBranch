@@ -1,0 +1,63 @@
+from BehaviourTree import add_action_behaviour, add_condition_behaviour, add_control_behaviour
+actions = [
+    "RunTowardsTarget",  #移動
+    "Thunderbolt",  #10万ボルト
+    "IronTail",  #アイアンテール
+    "Tackle",  #体当たり
+    "Stop"  #停止
+]
+variables = [
+    "distanceFromTarget",  #敵からの距離
+    "irontailRange",  #アイアンテールが当たる距離
+    "oppositeAngleFromAttack",  #攻撃方向から反対方向を表す角度
+    "headingAngle"  #今向いている角度
+]
+conditions = [">", "<", "=="]
+controls = ["Then"]
+
+#敵から左に30度へ進んで！
+action0 = [
+    add_action_behaviour("RunTowardsEnemy", 330)
+]
+
+#敵に近づいてアイアンテール！
+action1 = [
+    #近づく
+    add_action_behaviour("RunTowardsEnemy", 0),
+    
+    #敵に近づいたら、アイアンテール
+    [
+        add_condition_behaviour("distanceFromTarget", "<", "irontailRange"),
+        add_action_behaviour("IronTail")
+    ]
+]
+
+#避けて!
+action2 = [
+    #攻撃から反対方向へ走る
+    add_action_behaviour("RunTowardsEnemy", "oppositeAngleFromAttack")
+]
+
+#その後敵から離れて！
+action3 = [
+    #その後
+    add_control_behaviour("Then"),
+
+    #離れる
+    add_action_behaviour("RunTowardsEnemy", 180)
+]
+
+#敵の方へ向いて！
+action4 = [
+    #敵の方へ回転する
+    add_action_behaviour("RunTowardsEnemy", 0),
+
+    #敵の方向いたら、停止
+    [
+        add_condition_behaviour("headingAngle", "==", 0),
+        add_action_behaviour("Stop")
+    ]
+]
+
+#[PROMPT]
+action4 = [

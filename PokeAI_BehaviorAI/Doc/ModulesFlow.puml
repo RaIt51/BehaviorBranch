@@ -1,0 +1,28 @@
+@startuml ModulesFlow
+' Image can be obtained from
+' https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000
+
+start
+
+repeat
+
+    partition "SpeechRecognition" {
+        :wait for keyboard input;
+        :record speech
+        wait for release of key;
+        :transcribe speech;
+    }
+
+    partition "BehaviourController" {
+        :Fetch from LLM;
+        :validate code;
+        :execute code and get BehaviourBranch;
+    }
+
+    partition "Connector" {
+        :Send BehaviourBranch to Unity;
+    }
+
+repeat while (not exit)
+
+@enduml
